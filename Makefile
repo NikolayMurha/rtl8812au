@@ -1,5 +1,7 @@
 EXTRA_CFLAGS += $(USER_EXTRA_CFLAGS) -fno-pie
 EXTRA_CFLAGS += -O3
+EXTRA_CFLAGS += -Wno-error
+EXTRA_CFLAGS += -Wno-error=misleading-indentation
 EXTRA_CFLAGS += -Wno-unused-variable
 #EXTRA_CFLAGS += -Wno-unused-value
 EXTRA_CFLAGS += -Wno-unused-label
@@ -1597,7 +1599,7 @@ ifeq ($(CONFIG_RTL8723B), y)
 $(MODULE_NAME)-$(CONFIG_MP_INCLUDED)+= core/rtw_bt_mp.o
 endif
 
-obj-$(CONFIG_RTL8812AU) := $(MODULE_NAME).o
+obj-m := $(MODULE_NAME).o
 
 else
 
@@ -1606,7 +1608,9 @@ export CONFIG_RTL8812AU = m
 all: modules
 
 modules:
-	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd) O="$(KBUILD_OUTPUT)" modules
+	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) CONFIG_RTL8812AU=m USER_MODULE_NAME=$(USER_MODULE_NAME) TopDIR=$(CURDIR) -C $(KSRC) M=$(CURDIR) O="$(KBUILD_OUTPUT)" modules
+	@if [ -f "$(KSRC)/$(MODULE_NAME).ko" ]; then cp -f "$(KSRC)/$(MODULE_NAME).ko" "$(CURDIR)/$(MODULE_NAME).ko"; fi
+	@test -f "$(CURDIR)/$(MODULE_NAME).ko"
 
 strip:
 	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
