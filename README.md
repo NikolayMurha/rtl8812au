@@ -22,6 +22,25 @@ This driver can be installed using [DKMS]. This is a system which will automatic
 $ sudo apt-get install dkms
 ```
 
+### Prebuilt kernel DEB
+
+For a fleet using the same ARM64 kernel, build the module once and package it
+as a kernel-specific DEB:
+
+```
+$ ./build-kmod-deb.sh
+```
+
+The package is written to `dist/` and installs `88XXau_wfb.ko` under the exact
+kernel release used during the build. Use `BUILD_JOBS=3` by default, or override
+it explicitly when required:
+
+```
+$ BUILD_JOBS=3 ./build-kmod-deb.sh 6.18.34+rpt-rpi-v8
+```
+
+Rebuild the package after every kernel release change.
+
 ### Installation of Driver
 In order to install the driver open a terminal in the directory with the source code and execute the following command:
 ```
